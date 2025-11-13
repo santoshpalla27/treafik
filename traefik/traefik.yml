@@ -43,7 +43,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: \${ACME_EMAIL}
+      email: santoshpalla27@gmail.com
       storage: /acme.json
       httpChallenge:
         entryPoint: web
@@ -52,7 +52,7 @@ certificatesResolvers:
   # Staging (for testing - comment out for production)
   letsencrypt-staging:
     acme:
-      email: \${ACME_EMAIL}
+      email: santoshpalla27@gmail.com
       storage: /acme-staging.json
       httpChallenge:
         entryPoint: web
