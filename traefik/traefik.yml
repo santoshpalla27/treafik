@@ -11,8 +11,8 @@ entryPoints:
     http:
       redirections:
         entrypoint:
-          regex: "^http://(.*)\$"
-          replacement: "https://\$1"
+          regex: "^http://(.*)$"
+          replacement: "https://$1"
           permanent: true
   websecure:
     address: ":443"
