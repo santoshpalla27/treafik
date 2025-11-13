@@ -24,7 +24,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoint=websecure"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.\${DOMAIN}`)"
+      - traefik.http.routers.traefik.rule=Host("traefik.${DOMAIN}")
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.middlewares=auth@file"
       - "traefik.http.routers.traefik.tls=true"
@@ -55,7 +55,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.entrypoint=websecure"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.\${DOMAIN}`)"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"
       - "traefik.http.routers.portainer.service=portainer"
       - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
