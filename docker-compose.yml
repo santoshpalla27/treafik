@@ -39,6 +39,21 @@ services:
       retries: 3
       start_period: 40s
 
+
+  whoami:
+    image: traefik/whoami
+    container_name: whoami
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.root.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.root.entrypoints=websecure"
+      - "traefik.http.routers.root.tls=true"
+      - "traefik.http.routers.root.tls.certresolver=letsencrypt"
+      - "traefik.http.services.root.loadbalancer.server.port=80"
+
+
   # Portainer Container Management
   portainer:
     image: portainer/portainer-ce:latest
