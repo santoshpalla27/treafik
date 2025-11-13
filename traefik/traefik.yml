@@ -10,16 +10,18 @@ entryPoints:
     address: ":80"
     http:
       redirections:
-        entrypoint:
-          regex: "^http://(.*)$"
-          replacement: "https://$1"
+        entryPoint:
+          to: websecure
+          scheme: https
           permanent: true
+
   websecure:
     address: ":443"
     http:
       tls:
         certResolver: letsencrypt
         options: default
+
 
 # Providers
 providers:
