@@ -24,9 +24,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoint=websecure"
-      - traefik.http.routers.traefik.rule=Host("traefik.${DOMAIN}")
+      - "traefik.http.routers.traefik.rule=Host(\"traefik.${DOMAIN}\")"
       - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.middlewares=auth@file"
       - "traefik.http.routers.traefik.middlewares=auth@file,https-redirect@file"
       - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
@@ -48,7 +47,7 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.root.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.root.rule=Host(\"${DOMAIN}\")"
       - "traefik.http.routers.root.entrypoints=websecure"
       - "traefik.http.routers.root.tls=true"
       - "traefik.http.routers.root.tls.certresolver=letsencrypt"
