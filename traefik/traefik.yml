@@ -1,0 +1,79 @@
+# API Configuration
+api:
+  dashboard: true
+  debug: false
+  insecure: false
+
+# Entrypoints
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entrypoint:
+          regex: "^http://(.*)\$"
+          replacement: "https://\$1"
+          permanent: true
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: letsencrypt
+        options: default
+
+# Providers
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: traefik
+    watch: true
+    swarmMode: false
+  file:
+    filename: /config.yml
+    watch: true
+
+# Certificate Resolvers - Let's Encrypt HTTP Challenge
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: \${ACME_EMAIL}
+      storage: /acme.json
+      httpChallenge:
+        entryPoint: web
+      caServer: https://acme-v02.api.letsencrypt.org/directory
+
+  # Staging (for testing - comment out for production)
+  letsencrypt-staging:
+    acme:
+      email: \${ACME_EMAIL}
+      storage: /acme-staging.json
+      httpChallenge:
+        entryPoint: web
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+
+# Global Settings
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+# Logging
+log:
+  level: INFO
+  filePath: /logs/traefik.log
+  format: json
+
+accessLog:
+  filePath: /logs/access.log
+  format: json
+  fields:
+    defaultMode: keep
+    names:
+      ClientUsername: drop
+
+# Metrics (Optional - Prometheus)
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addServicesLabels: true
+
