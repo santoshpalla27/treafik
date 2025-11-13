@@ -3,6 +3,9 @@ api:
   dashboard: true
   debug: false
   insecure: false
+  
+ping:
+  entryPoint: web
 
 # Entrypoints
 entryPoints:
