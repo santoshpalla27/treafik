@@ -1,5 +1,10 @@
 http:
   middlewares:
+  # HTTP → HTTPS Redirect
+    https-redirect:
+      redirectScheme:
+        scheme: https
+        permanent: true
     # Basic Authentication
     auth:
       basicAuth:
