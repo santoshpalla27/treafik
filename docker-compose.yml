@@ -13,7 +13,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"  # Dashboard (restrict access)
+      - "8080:8080"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -23,15 +23,13 @@ services:
       - ./traefik/logs:/logs
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.entrypoint=websecure"
-      - "traefik.http.routers.traefik.rule=Host(\"traefik.${DOMAIN}\")"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.middlewares=auth@file"
       - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
-    depends_on:
-      - portainer
     healthcheck:
       test: ["CMD", "traefik", "healthcheck", "--ping"]
       interval: 30s
@@ -39,7 +37,7 @@ services:
       retries: 3
       start_period: 40s
 
-
+  # WhoAmI test service
   whoami:
     image: traefik/whoami
     container_name: whoami
@@ -47,12 +45,11 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.root.rule=Host(\"${DOMAIN}\")"
-      - "traefik.http.routers.root.entrypoints=websecure"
-      - "traefik.http.routers.root.tls=true"
-      - "traefik.http.routers.root.tls.certresolver=letsencrypt"
-      - "traefik.http.services.root.loadbalancer.server.port=80"
-
+      - "traefik.http.routers.whoami.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.routers.whoami.tls.certresolver=letsencrypt"
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
 
   # Portainer Container Management
   portainer:
@@ -69,9 +66,8 @@ services:
       - portainer_data:/data
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.entrypoint=websecure"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"
-      - "traefik.http.routers.portainer.service=portainer"
       - "traefik.http.routers.portainer.tls=true"
       - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
