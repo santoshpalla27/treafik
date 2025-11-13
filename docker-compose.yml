@@ -62,7 +62,7 @@ services:
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
       - "traefik.http.services.portainer.loadbalancer.scheme=http"
     healthcheck:
-      test: ["CMD-SHELL", "curl -fs http://localhost:9000/api/status || exit 1"]
+      test: ["CMD", "/portainer", "--version"]
       interval: 30s
       timeout: 10s
       retries: 3
