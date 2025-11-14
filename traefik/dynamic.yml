@@ -1,0 +1,100 @@
+# ============================================
+# TRAEFIK DYNAMIC CONFIGURATION
+# ============================================
+
+http:
+  # --- Middlewares ---
+  middlewares:
+    # HTTPS Redirect Middleware
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    # Security Headers Middleware
+    securityHeaders:
+      headers:
+        # HSTS Configuration
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        
+        # Security Headers
+        forceSTSHeader: true
+        frameDeny: true
+        contentTypeNosniff: true
+        browserXssFilter: true
+        referrerPolicy: "strict-origin-when-cross-origin"
+        permissionsPolicy: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()"
+        
+        # Custom Security Headers
+        customResponseHeaders:
+          X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex"
+          X-Forwarded-Proto: "https"
+          server: ""
+        
+        # Content Security Policy (adjust as needed)
+        contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
+
+    # Basic Auth for Traefik Dashboard
+    traefik-auth:
+      basicAuth:
+        users:
+          - "${BASIC_AUTH_USER}:${BASIC_AUTH_HASH}"
+        realm: "Traefik Dashboard"
+        removeHeader: true
+
+    # Basic Auth for Portainer
+    portainer-auth:
+      basicAuth:
+        users:
+          - "${BASIC_AUTH_USER}:${BASIC_AUTH_HASH}"
+        realm: "Portainer Access"
+        removeHeader: true
+
+    # IP Whitelist Middleware (Uncomment and configure as needed)
+    # ip-whitelist:
+    #   ipWhiteList:
+    #     sourceRange:
+    #       - "127.0.0.1/32"
+    #       - "192.168.1.0/24"
+    #       - "10.0.0.0/8"
+    #     ipStrategy:
+    #       depth: 1
+
+    # Rate Limiting Middleware (Uncomment to enable)
+    # rate-limit:
+    #   rateLimit:
+    #     average: 100
+    #     burst: 50
+    #     period: 1m
+
+    # Compress Middleware
+    compress:
+      compress: {}
+
+    # Retry Middleware
+    retry:
+      attempts: 3
+      initialInterval: 100ms
+
+# --- TLS Options ---
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+      cipherSuites:
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+        - TLS_AES_128_GCM_SHA256
+        - TLS_AES_256_GCM_SHA384
+        - TLS_CHACHA20_POLY1305_SHA256
+      curvePreferences:
+        - CurveP521
+        - CurveP384
+      sniStrict: true
+
+    modern:
+      minVersion: VersionTLS13
+      sniStrict: true
