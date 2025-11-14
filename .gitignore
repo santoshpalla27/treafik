@@ -1,3 +1,21 @@
+# Environment files
 .env
-traefik/acme.json
+.env.local
+.env.*.local
+
+# Let's Encrypt certificates
+letsencrypt/
+
+# Logs
 *.log
+
+# Docker volumes
+volumes/
+
+# Backup files
+*.bak
+*~
+
+# OS files
+.DS_Store
+Thumbs.db

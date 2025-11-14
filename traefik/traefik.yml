@@ -111,12 +111,12 @@ ping:
 # --- Log Configuration ---
 log:
   level: INFO
-  filePath: /var/log/traefik/traefik.log
+  # filePath: /var/log/traefik/traefik.log  # comment to log to stdout
   format: json
 
 # --- Access Logs ---
 accessLog:
-  filePath: /var/log/traefik/access.log
+  # filePath: /var/log/traefik/access.log  # comment to log to stdout
   format: json
   bufferingSize: 100
   filters:

@@ -3,7 +3,6 @@
 # ============================================
 
 http:
-  # --- Middlewares ---
   middlewares:
     # HTTPS Redirect Middleware
     redirect-to-https:
@@ -12,73 +11,69 @@ http:
         permanent: true
 
     # Security Headers Middleware
-    securityHeaders:
+    security-headers:
       headers:
         # HSTS Configuration
         stsSeconds: 31536000
         stsIncludeSubdomains: true
         stsPreload: true
+        forceSTSHeader: true
         
         # Security Headers
-        forceSTSHeader: true
         frameDeny: true
         contentTypeNosniff: true
         browserXssFilter: true
         referrerPolicy: "strict-origin-when-cross-origin"
         permissionsPolicy: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()"
         
-        # Custom Security Headers
+        # Custom Response Headers
         customResponseHeaders:
           X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex"
           X-Forwarded-Proto: "https"
-          server: ""
+          Server: ""
+          X-Powered-By: ""
         
-        # Content Security Policy (adjust as needed)
-        contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
+        # Content Security Policy
+        contentSecurityPolicy: |
+          default-src 'self';
+          script-src 'self' 'unsafe-inline' 'unsafe-eval';
+          style-src 'self' 'unsafe-inline';
+          img-src 'self' data: https:;
+          font-src 'self' data:;
+          connect-src 'self';
+          frame-ancestors 'none';
+          base-uri 'self';
+          form-action 'self';
 
     # Basic Auth for Traefik Dashboard
     traefik-auth:
       basicAuth:
         users:
-          - "${BASIC_AUTH_USER}:${BASIC_AUTH_HASH}"
+          - "admin:\$\$2y\$\$05\$\$ZYe6oJvvP.TCT5Qy2VC.reF/qrvUe4RJ1hqy36OJHJZtwM7NLuhJe"
         realm: "Traefik Dashboard"
         removeHeader: true
 
-    # Basic Auth for Portainer
-    portainer-auth:
-      basicAuth:
-        users:
-          - "${BASIC_AUTH_USER}:${BASIC_AUTH_HASH}"
-        realm: "Portainer Access"
-        removeHeader: true
+    # Compression Middleware
+    compression:
+      compress:
+        excludedContentTypes:
+          - "text/event-stream"
 
-    # IP Whitelist Middleware (Uncomment and configure as needed)
-    # ip-whitelist:
-    #   ipWhiteList:
-    #     sourceRange:
-    #       - "127.0.0.1/32"
-    #       - "192.168.1.0/24"
-    #       - "10.0.0.0/8"
-    #     ipStrategy:
-    #       depth: 1
-
-    # Rate Limiting Middleware (Uncomment to enable)
+    # Rate Limiting (Optional - Uncomment to enable)
     # rate-limit:
     #   rateLimit:
     #     average: 100
     #     burst: 50
     #     period: 1m
 
-    # Compress Middleware
-    compress:
-      compress: {}
+    # IP Whitelist (Optional - Uncomment and configure)
+    # ip-whitelist:
+    #   ipWhiteList:
+    #     sourceRange:
+    #       - "127.0.0.1/32"
+    #       - "YOUR_IP_ADDRESS/32"
 
-    # Retry Middleware
-    retry:
-      attempts: 3
-      initialInterval: 100ms
-
-# --- TLS Options ---
+# TLS Configuration
 tls:
   options:
     default:
@@ -93,8 +88,8 @@ tls:
       curvePreferences:
         - CurveP521
         - CurveP384
-      sniStrict: true
+      sniStrict: false
 
     modern:
       minVersion: VersionTLS13
-      sniStrict: true
+      sniStrict: false
